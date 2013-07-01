@@ -1,0 +1,94 @@
+
+<!doctype html>
+<!--Java source code from: 
+    http://nithinbekal.com/2010/a-simple-to-do-list-app-using-html5-and-local-storage/-->
+
+<html>
+<head>
+  <title>To Do List</title>
+  <style>
+  body { background: white; font-family: Arial, sans-serif; font-size: 14px; }
+  #taskbox { background-color: white; margin: 50px auto; width: 400px; }
+  header h1 { text-align: center; }
+  label { display: block; padding-bottom: 5px; text-align: center; }
+  #task { border: 1px solid black; width: 200px; }
+  #tasks { margin: 0px; padding: 0; }
+  #tasks li { list-style-type: none; padding: 3px; }
+  #tasks li:nth-child(2n) { background-color: lightgrey; }
+  #tasks li:nth-child(2n+1) { background-color: lightblue; }
+  #tasks li:hover { background-color: grey; }
+  #tasks li a { color: red; display: block; float: right; }
+  </style>
+</head>
+<body>
+<div id="taskbox">
+  <header>
+    <h1>Create Your Own To Do List</h1>
+  </header>
+  
+   <section id="main-content">
+    <div class="form-area">
+      <form id="tasks-form">
+        <label for="task"><b><u>Enter task below and hit enter</u></b></label>
+        <center><input id="task" autofocus></center>
+      </form>
+      <center><label for="task"><br>(Click '<u>X</u>' to the right of a task to mark complete)</label></center>
+    </div>
+  
+    <ul id="tasks"></ul>
+  </section>
+  
+</div>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <script type="text/javascript"> 
+    $(document).ready(function() { 
+    
+      var i = 0;
+      
+      // Initial loading of tasks
+      for( i = 0; i < localStorage.length; i++)
+        $("#tasks").append("<li id='task-"+ i +"'>" + localStorage.getItem('task-'+i) + " <a href='#'>x</a></li>");
+        
+      // Add a task
+      $("#tasks-form").submit(function() {
+        if (  $("#task").val() != "" ) {
+          localStorage.setItem( "task-"+i, $("#task").val() );
+          $("#tasks").append("<li id='task-"+i+"'>"+localStorage.getItem("task-"+i)+" <a href='#'><b>X</b></a></li>")
+          $("#task-" + i).css('display', 'none');
+          $("#task-" + i).slideDown();
+          $("#task").val("");
+          i++;
+        }
+        return false;
+      });
+      
+      // Remove a task      
+      $("#tasks li a").live("click", function() {
+        localStorage.removeItem($(this).parent().attr("id"));
+        $(this).parent().slideUp('slow', function() { $(this).remove(); } );
+        for(i=0; i<localStorage.length; i++) {
+          if( !localStorage.getItem("task-"+i)) {
+            localStorage.setItem("task-"+i, localStorage.getItem('task-' + (i+1) ) );
+            localStorage.removeItem('task-'+ (i+1) );
+          }
+        }
+      });
+    }); 
+  </script>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-2095438-10']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</body>
+</html>
